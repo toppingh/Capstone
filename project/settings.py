@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,8 +34,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
     'accounts',
-    'check',
+    'home',
+    'search',
+    'camera',
+    'info',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,3 +132,28 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 유저 모델
+AUTH_USER_MODEL = 'accounts.User'
+
+# 로그인 방법
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# 미디어 경로
+MEDIA_URL = "media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# 라이브러리 설정
+REST_USE_JWT = True # JWT 사용 여부
+JWT_AUTH_COOKIE = 'my-app-auth' # 호출할 Cookie Key값
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token' # Refresh Token Cookie Key 값을 사용하는 경우
+
+SITE_ID = 1 # 해당 도메인의 id(django_site 테이블의 id, oauth 글에서 다룰 예정)
+ACCOUNT_UNIQUE_EMAIL = True # User email unique 사용 여부
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None # User username type
+ACCOUNT_USERNAME_REQUIRED = True # User username 필수 여부
+ACCOUNT_EMAIL_REQUIRED = True # User email 필수 여부
+ACCOUNT_AUTHENTICATION_METHOD = 'email' # 로그인 인증 수단
+ACCOUNT_EMAIL_VERIFICATION = 'none' # Email 인증 필수 여부
