@@ -7,9 +7,9 @@ class Photo(models.Model):
     email = models.EmailField(blank=False) # 이메일은 필수, 유저 구분용
     image = models.ImageField(upload_to='photos/')
     photo_state = (
-        ('0', '정상'),
-        ('1', '병충해'),
-        ('2', '기타'),
+        ('GOOD', 'normal'),
+        ('BAD', 'complaint'),
+        ('ETC', 'etc'),
     )
     name = models.CharField(max_length=60)
     ai_name = models.CharField(max_length=60)
