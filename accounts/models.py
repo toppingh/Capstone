@@ -40,18 +40,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
-    date_joined = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
-    USERNAME_FIELD = 'username' # username, 아이디로 사용할 필드
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['email']
 
     objects = UserManager()
 
     def __str__(self):
-        return self.username
+        return self.email
 
     class Meta:
         verbose_name = 'user'
         verbose_name_plural = 'users'
-        ordering = ['date_joined']
+        ordering = ['-created_at']

@@ -4,16 +4,17 @@ from accounts.models import User
 # Create your models here.
 # 사진
 class Photo(models.Model):
-    email = models.ForeignKey(User.email, blank=False) # 이메일은 필수, 유저 구분용
+    email = models.EmailField(blank=False) # 이메일은 필수, 유저 구분용
     image = models.ImageField(upload_to='photos/')
-    state = (
+    photo_state = (
         ('0', '정상'),
-        ('B', '토마토 잎 곰팡이병'),
-        ('C', '토마토 황화 잎말이 바이러스'),
+        ('1', '병충해'),
+        ('2', '기타'),
     )
-    name = models.CharField(max_length=1, choices=state)
-    explain = models.CharField(max_length=100) # 이미지에 대한 결과 코멘트
-    create_at = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=60)
+    state = models.CharField(max_length=20, choices=photo_state)
+    explain = models.CharField(max_length=60) # 이미지에 대한 결과 코멘트
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
