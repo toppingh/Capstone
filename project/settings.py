@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'home',
     'search',
-    'camera',
+
     'info',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -153,7 +153,7 @@ JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token' # Refresh Token Cookie Key 값을 �
 SITE_ID = 1 # 해당 도메인의 id(django_site 테이블의 id, oauth 글에서 다룰 예정)
 ACCOUNT_UNIQUE_EMAIL = True # User email unique 사용 여부
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None # User username type
-ACCOUNT_USERNAME_REQUIRED = True # User username 필수 여부
+ACCOUNT_USERNAME_REQUIRED = False # User username 필수 여부
 ACCOUNT_EMAIL_REQUIRED = True # User email 필수 여부
 ACCOUNT_AUTHENTICATION_METHOD = 'email' # 로그인 인증 수단
 ACCOUNT_EMAIL_VERIFICATION = 'none' # Email 인증 필수 여부
