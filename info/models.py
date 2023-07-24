@@ -6,8 +6,8 @@ from accounts.models import *
 # 지난기록
 class History(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE) # 유저 불러오기
-    infect_history = models.ForeignKey(Infect, on_delete=models.CASCADE) # 병충해 기록
-    normal_history = models.ForeignKey(Normal, on_delete=models.CASCADE) # 정상 기록
+    #infect_history = models.ForeignKey(Infect, on_delete=models.CASCADE) # 병충해 기록
+    #normal_history = models.ForeignKey(Normal, on_delete=models.CASCADE) # 정상 기록
     date = models.ForeignKey(Photo, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -29,8 +29,8 @@ class QnA(models.Model):
 
 # 책갈피
 class Scrap(models.Model):
-    code = models.ForeignKey(Photo.resultCode, on_delete=models.CASCADE) # 기록 코드
-    infect_content = models.ForeignKey(Infect, on_delete=models.CASCADE) # 병충해 내용
+    #code = models.ForeignKey(Photo.resultCode, on_delete=models.CASCADE) # 기록 코드
+    ##infect_content = models.ForeignKey(Infect, on_delete=models.CASCADE) # 병충해 내용
     date = models.ForeignKey(Photo, on_delete=models.CASCADE) # 날짜
 
     def __str__(self):
