@@ -137,34 +137,45 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 # 로그인 방법
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
 
 # 미디어 경로
 MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # 라이브러리 설정
-REST_USE_JWT = True # JWT 사용 여부
+# REST_USE_JWT = True # JWT 사용 여부, 23년 2월부터 아래와 같이 변경됨!!!
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_HTTPONLY': False, # refresh token 사용예정일 경우 False로
+    'JWT_AUTH_COOKIE': 'access', # 로그아웃을 위해 추가
+    'JWT_AUTH_REFRESH_COOKIE': 'refresh_token', # 로그아웃을 위해 추가
+    'JWT_AUTH_COOKIE_USE_CSRF': 'True',
+}
 JWT_AUTH_COOKIE = 'my-app-auth' # 호출할 Cookie Key값
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token' # Refresh Token Cookie Key 값을 사용하는 경우
 
-SITE_ID = 1 # 해당 도메인의 id(django_site 테이블의 id, oauth 글에서 다룰 예정)
+
+SITE_ID = 1 # 해당 도메인의 id(django_site 테이블의 id)
 ACCOUNT_UNIQUE_EMAIL = True # User email unique 사용 여부
-# ACCOUNT_USER_MODEL_USERNAME_FIELD = None # User username type
 ACCOUNT_USERNAME_REQUIRED = True # User username 필수 여부
 ACCOUNT_EMAIL_REQUIRED = True # User email 필수 여부
 ACCOUNT_AUTHENTICATION_METHOD = 'email' # 로그인 인증 수단
 ACCOUNT_EMAIL_VERIFICATION = 'none' # 회원가입 시 Email 인증 필수 여부
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # 추가
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2), # access token 만료기간
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7), # refresh token 만료기간
+    'ROTATE_REFRESH_TOKENS': False, # token 재발급 관련 설정
 }
