@@ -5,8 +5,6 @@ from django.utils import timezone
 # Create your models here.
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
-        if not username :
-            raise ValueError("아이디를 입력해야 합니다.")
         if not email :
             raise ValueError("이메일을 입력해야 합니다.")
 
@@ -20,17 +18,17 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password):
-        user = self.create_user(
+    def create_superuser(self, username, email, password=None):
+        superuser = self.create_user(
             username=username,
             email=email,
             password=password,
         )
 
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(using=self._db)
-        return user
+        superuser.is_staff = True
+        superuser.is_superuser = True
+        superuser.save(using=self._db)
+        return superuser
 
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30)
