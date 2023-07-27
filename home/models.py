@@ -33,3 +33,8 @@ class Pest(models.Model):
 
     def __str__(self):
         return self.name
+
+# 나의 지난 기록
+class History(models.Model):
+    name = models.CharField(max_length=20)
+    history_img = models.ImageField(upload_to='histories/%Y/%m/%d', default='default.png')
