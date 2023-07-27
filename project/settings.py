@@ -164,6 +164,7 @@ ACCOUNT_USERNAME_REQUIRED = True # User username 필수 여부
 ACCOUNT_EMAIL_REQUIRED = True # User email 필수 여부
 ACCOUNT_AUTHENTICATION_METHOD = 'email' # 로그인 인증 수단
 ACCOUNT_EMAIL_VERIFICATION = 'none' # 회원가입 시 Email 인증 필수 여부
+LOGOUT_ON_PASSWORD_CHANGE = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # 추가
 
