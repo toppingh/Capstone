@@ -23,6 +23,7 @@ from project import settings
 urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('home/', include('home.urls')),
+    path('info/', include('info.urls')),
     path('a1ds5fa6eragsdfa565awaf3d5a4e/', admin.site.urls),
 ]
 
