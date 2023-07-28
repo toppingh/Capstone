@@ -22,6 +22,7 @@ from project import settings
 
 urlpatterns = [
     path('accounts/', include('accounts.urls')),
+    path('home/', include('home.urls')),
     path('admin/', admin.site.urls),
 ]
 

@@ -42,6 +42,7 @@ class Pest(models.Model):
 class History(models.Model):
     name = models.CharField(max_length=20)
     history_img = models.ImageField(upload_to='histories/%Y/%m/%d', default='default.png')
+    causation = models.TextField()
 
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -51,3 +52,15 @@ class History(models.Model):
 
     def __str__(self):
         return self.name
+
+# 메인화면
+class Home(models.Model):
+    blight_list = models.ForeignKey(Blight, on_delete=models.CASCADE)
+    pest_list = models.ForeignKey(Pest, on_delete=models.CASCADE)
+    history_list = models.ForeignKey(History, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.created_at
