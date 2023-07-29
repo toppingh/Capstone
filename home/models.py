@@ -12,6 +12,7 @@ class Blight(models.Model):
         ('STRIPE', 'ToMV'), # 줄무늬
 
     )
+    type = models.CharField(max_length=20, choices=blight_type, default='DOT', null=True, blank=True)
 
     created_at = models.DateTimeField('생성 일시', auto_now_add=True)
     updated_at = models.DateTimeField('수정 일시', auto_now=True)

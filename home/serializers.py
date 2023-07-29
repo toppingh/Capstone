@@ -6,7 +6,7 @@ from .models import *
 class BlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blight
-        fields = ('name', 'blight_img', 'causation')
+        fields = ('id', 'name', 'blight_img', 'causation')
 
 # 병충 조회
 class PestSerializer(serializers.ModelSerializer):

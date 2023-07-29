@@ -21,6 +21,13 @@ class BlightAPIView(APIView):
         serializer = BlightSerializer(blight)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# 병충 전체 api 뷰
+class AllPestAPIView(APIView):
+    def get(self, request):
+        pests = Pest.objects.all()
+        serializer = PestSerializer(pests, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 # 병충 api 뷰 (상세)
 class PestAPIView(APIView):
     def get(self, request, pk):

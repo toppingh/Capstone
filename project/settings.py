@@ -173,6 +173,9 @@ REST_FRAMEWORK = {
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_RENDERER_CLASSES': [
+        'project.renderers.CustomRenderer',
+    ]
 }
 
 SIMPLE_JWT = {
