@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 # Create your models here.
 # 자주 발병하는 병해
@@ -14,11 +13,13 @@ class Blight(models.Model):
 
     )
 
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField('생성 일시', auto_now_add=True)
+    updated_at = models.DateTimeField('수정 일시', auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'blight'
+        verbose_name = plural = 'blights'
 
     def __str__(self):
         return self.name
@@ -29,38 +30,31 @@ class Pest(models.Model):
     pest_img = models.ImageField(upload_to='pests/%Y/%m/%d', default='default.png')
     causation = models.TextField()
 
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField('생성 일시', auto_now_add=True)
+    updated_at = models.DateTimeField('수정 일시', auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'pest'
+        verbose_name_plural = 'pests'
 
     def __str__(self):
         return self.name
 
 # 나의 지난 기록
 class History(models.Model):
+    email = models.EmailField()
     name = models.CharField(max_length=20)
     history_img = models.ImageField(upload_to='histories/%Y/%m/%d', default='default.png')
     causation = models.TextField()
 
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField('생성 일시', auto_now_add=True)
+    updated_at = models.DateTimeField('수정 일시', auto_now=True)
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'history'
+        verbose_name_plural = 'histories'
 
     def __str__(self):
         return self.name
-
-# 메인화면
-class Home(models.Model):
-    blight_list = models.ForeignKey(Blight, on_delete=models.CASCADE)
-    pest_list = models.ForeignKey(Pest, on_delete=models.CASCADE)
-    history_list = models.ForeignKey(History, on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.created_at

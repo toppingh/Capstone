@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.db import models
 
 # Create your models here.
@@ -16,8 +15,13 @@ class Photo(models.Model):
     state = models.CharField(max_length=20, choices=photo_state, default='GOOD', null=True, blank=True)
     explain = models.CharField(max_length=60, null=True, blank=True) # 이미지에 대한 결과 코멘트
 
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField('생성 일시', auto_now_add=True)
+    updated_at = models.DateTimeField('수정 일시', auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'photo'
+        verbose_name_plural = 'photos'
 
     def __str__(self):
         return self.name
