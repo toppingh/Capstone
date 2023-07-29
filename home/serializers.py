@@ -12,7 +12,7 @@ class BlightSerializer(serializers.ModelSerializer):
 class PestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pest
-        fields = ('name', 'pest_img', 'causation')
+        fields = ('id', 'name', 'pest_img', 'causation')
 
 # 히스토리 조희
 class HistorySerializer(serializers.ModelSerializer):

@@ -19,7 +19,7 @@ class Blight(models.Model):
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'blight'
-        verbose_name = plural = 'blights'
+        verbose_name_plural = 'blights'
 
     def __str__(self):
         return self.name

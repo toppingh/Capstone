@@ -7,6 +7,13 @@ from .models import Blight, Pest, History
 from .serializers import BlightSerializer, PestSerializer, HistorySerializer
 
 # Create your views here.
+# 병해 전체 api 뷰
+class AllBlightAPIView(APIView):
+    def get(self, request):
+        blights = Blight.objects.all()
+        serializer = BlightSerializer(blights, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 # 병해 api 뷰 (상세)
 class BlightAPIView(APIView):
     def get(self, request, pk):
