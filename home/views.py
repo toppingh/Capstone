@@ -4,6 +4,7 @@ from rest_framework import status, viewsets, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import filters
+from rest_framework.viewsets import ModelViewSet
 
 from .models import Blight, Pest, History
 from .serializers import BlightSerializer, PestSerializer, HistorySerializer
@@ -58,12 +59,13 @@ class PestAPIView(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 # 히스토리 뷰셋
-class HistoryListView(generics.ListAPIView):
+class HistoryViewSet(ModelViewSet):
     queryset = History.objects.all()
     serializer_class = HistorySerializer
 
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['data__name', 'data__causation']
+    filter_backends = [SearchFilter]
+    search_fields = ('$name', '$causation', )
+
 
 # 히스토리 전체 api 뷰
 class AllHistoryAPIView(APIView):

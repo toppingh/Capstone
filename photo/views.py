@@ -12,7 +12,12 @@ class NormalPhotoAPIView(APIView):
     def get(self, request):
         n_photos = Photo.objects.filter(state='GOOD')
         serializer = NormalPhotoSerializer(n_photos, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        result = {
+            "code": 200,
+            "message": "성공적으로 수행됐습니다!",
+            "result": serializer.data
+        }
+        return Response(result, status=status.HTTP_200_OK)
 
 # 병충해 사진 api뷰
 class ComplaintPhotoAPIView(APIView):
