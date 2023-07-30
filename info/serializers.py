@@ -6,16 +6,16 @@ from .models import *
 class QnASerializer(serializers.ModelSerializer):
     class Meta:
         model = QnA
-        fields = ('email', 'title', 'content', 'qnaImg')
+        fields = ('id', 'email', 'title', 'content', 'qnaImg')
 
 # 스크랩 시리얼라이저
 class ScrapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scrap
-        fields = ('email', 'result')
+        fields = ('id', 'email', 'result')
 
 # 제보 시리얼라이저
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields = ('email', 'title', 'content', 'reportImg')
+        fields = ('id', 'email', 'title', 'content', 'reportImg')
