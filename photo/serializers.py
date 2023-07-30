@@ -18,3 +18,9 @@ class EtcPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ('id', 'name', 'state', 'explain')
+
+# 전체 사진
+class AllPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ('id', 'name', 'ai_name', 'state', 'explain')
