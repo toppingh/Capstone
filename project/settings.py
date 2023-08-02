@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'allauth.account',
     'accounts',
     'home',
-    'search',
     'photo',
     'info',
     'django_filters',
