@@ -10,14 +10,30 @@ from .serializers import QnASerializer, ScrapSerializer, ReportSerializer
 # QnA 뷰 (전체)
 class AllQnaAPIView(APIView):
     def get(self, request):
-        qnas = QnA.objects.all()
-        serializer = QnASerializer(qnas, many=True)
-        result = {
-            "code": 200,
-            "message": "성공적으로 수행됐습니다!",
-            "result": serializer.data
-        }
-        return Response(result, status=status.HTTP_200_OK)
+        email = request.GET.get('email')
+
+        if email:
+            try:
+                qnas = QnA.objects.filter(email=email).order_by('-id')
+                serializer = QnASerializer(qnas, many=True)
+                result = {
+                    "code": 200,
+                    "message": "성공적으로 수행됐습니다!",
+                    "result": serializer.data
+                }
+                return Response(result, status=status.HTTP_200_OK)
+            except qnas.DoesNotExist:
+                result = {
+                    "code": 404,
+                    "message": "문의를 찾을 수 없습니다!",
+                }
+                return Response(result, status=status.HTTP_404_NOT_FOUND)
+        else:
+            result = {
+                "code": 400,
+                "message": "이메일이 없습니다!",
+            }
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 # QnA 뷰 (상세)
 class QnaAPIView(APIView):
@@ -68,27 +84,64 @@ class QnaAPIView(APIView):
 
 # 스크랩 뷰
 class ScrapAPIView(APIView):
-    def get(self, request):
-        scraps = Scrap.objects.all()
-        serializer = ScrapSerializer(scraps, many=True)
-        result = {
-            "code": 200,
-            "message": "성공적으로 수행됐습니다!",
-            "result": serializer.data
-        }
-        return Response(result, status=status.HTTP_200_OK)
+    def get(self, request, email):
+        email = request.GET.get('email')
+
+        if email:
+            try:
+                scraps = Scrap.objects.filter(email=email).order_by('-id')
+                serializer = ScrapSerializer(scraps, many=True)
+                result = {
+                    "code": 200,
+                    "message": "성공적으로 수행됐습니다!",
+                    "result": serializer.data
+                }
+
+                return Response(result, status=status.HTTP_200_OK)
+
+            except scraps.DoesNotExist:
+                result = {
+                    "code": 404,
+                    "message": "해당 스크랩을 찾을 수 없습니다!",
+                }
+                return Response(result, status=status.HTTP_404_NOT_FOUND)
+        else:
+            result = {
+                "code": 400,
+                "message": "이메일이 없습니다!",
+            }
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 # 제보 뷰 (전체)
 class AllReportAPIView(APIView):
     def get(self, request):
-        reports = Report.objects.all()
-        serializer = ReportSerializer(reports, many=True)
-        result = {
-            "code": 200,
-            "message": "성공적으로 수행됐습니다!",
-            "result": serializer.data
-        }
-        return Response(result, status=status.HTTP_200_OK)
+        email = request.GET.get('email')
+
+        if email:
+            try:
+                reports = Report.objects.filter(email=email).order_by('-id')
+                serializer = ReportSerializer(reports, many=True)
+                result = {
+                    "code": 200,
+                    "message": "성공적으로 수행됐습니다!",
+                    "result": serializer.data
+                }
+                return Response(result, status=status.HTTP_200_OK)
+
+            except reports.DoesNotExist:
+                result = {
+                    "code": 404,
+                    "message": "제보를 찾을 수 없습니다!",
+                }
+                return Response(result, status=status.HTTP_404_NOT_FOUND)
+        else:
+            result = {
+                "code": 400,
+                "message": "이메일이 없습니다!",
+            }
+            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 # 제보 뷰 (상세)
 class ReportAPIView(APIView):
@@ -136,5 +189,3 @@ class ReportAPIView(APIView):
             "result": serializer.data
         }
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
-
-
