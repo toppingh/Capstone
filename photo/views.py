@@ -1,10 +1,10 @@
-from rest_framework.generics import get_object_or_404
+import os
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import JsonResponse
 import requests
-from tkinter import Tk, filedialog # 이미지 파일 경로
+from PIL import Image
 
 from .models import Photo
 from .serializers import NormalPhotoSerializer, ComplaintPhotoSerializer, EtcPhotoSerializer, AllPhotoSerializer
@@ -66,12 +66,25 @@ def send_photo_to_AI(request):
         files = request.FILES.get('file')
 
         if files:
+            img_check = os.path.splitext(files.name)[1].lower()
+
+            if img_check not in ['.png', '.jpg', '.jpeg']:
+                img = Image.open(files)
+                img = img.convert('RGB')
+                img_path = 'image.png'
+                img.save(img_path)
+                files = open(img_path, 'rb')
+
             # AI서버의 rest api 주소
             AI_url = 'http://127.0.0.1:5000/detect'
 
             # 파일과 데이터를 함께 POST 요청 보내기
             files = {'file': files}
             response = requests.post(AI_url, files=files)
+
+            # (임시)이미지 파일 삭제
+            if 'img_path' in locals():
+                os.remove(img_path)
 
             # 요청 결과 처리
             if response.status_code == 200:
