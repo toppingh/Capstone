@@ -1,4 +1,7 @@
 import os
+
+from django.core.files.base import ContentFile
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -88,13 +91,17 @@ def send_photo_to_AI(request):
 
             # 요청 결과 처리
             if response.status_code == 200:
-                with open('default_image.jpg', 'wb') as f: # flask에서 보낸 이미지 받기
-                    f.write(response.content)
+                # ai 서버에서 넘겨온 이미지 db에 저장
+                ai_image = Photo()
+                ai_image.image.save('default_image.jpg', ContentFile(response.content))
+                ai_image.save()
 
-                with open('default_image.jpg', 'wb') as f:
-                    response = HttpResponse(f.read(), content_type='image/jpg')
-                    response['Content-Disposition'] = '"attachment; filename="default_image.jpg"'
-                    return response
+                # db에 저장된 이미지를 앱으로 response
+                db_image = get_object_or_404(Photo, pk=ai_image.pk)
+                response = HttpResponse(db_image.image.read(), content_type='image/jpg')
+                response['Content-Disposition'] = 'attachment; filename="default_image"'
+                return response
+
             else:
                 return HttpResponse({'message': "사진을 보내는데 실패했습니다! 다시 시도해주세요."}, status=response.status_code)
         else:
