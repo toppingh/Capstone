@@ -89,10 +89,18 @@ def send_photo_to_AI(request):
             if 'img_path' in locals():
                 os.remove(img_path)
 
-            # 요청 결과 처리
+            # 요청 결과 처리 - 3번째 수정 코드!
             if response.status_code == 200:
-                # ai 서버에서 넘겨온 이미지 db에 저장
-                ai_image = Photo()
+                # ai서버의 결과를 photo_state에 따라 다르게 저장!
+                ai_result = 'GOOD' # 기본은 정상 사진으로
+                if ai_result == 'GOOD':
+                    photo_state = 'normal'
+                elif ai_result == 'BAD':
+                    photo_state = 'complaint'
+                else:
+                    photo_state = 'etc'
+
+                ai_image = Photo(photo_state=photo_state)
                 ai_image.image.save('default_image.jpg', ContentFile(response.content))
                 ai_image.save()
 
