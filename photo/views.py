@@ -65,10 +65,12 @@ class AllPhotoAPIView(APIView):
 def send_photo_to_AI(request):
     if request.method == 'POST':
         # 유저 사진
-        # if request.FILES.get('file') is not None:
         files = request.FILES.get('file')
+        # 유저 이메일
+        email = request.POST.get('email')
 
-        if files:
+
+        if files and email:
             img_check = os.path.splitext(files.name)[1].lower()
 
             if img_check not in ['.png', '.jpg', '.jpeg']:
@@ -89,13 +91,13 @@ def send_photo_to_AI(request):
             if 'img_path' in locals():
                 os.remove(img_path)
 
-            # 요청 결과 처리 - 3번째 수정 코드!
+            # 요청 결과 처리 - 4번째 수정 코드!
             if response.status_code == 200:
                 # ai서버의 결과를 photo_state에 따라 다르게 저장!
                 ai_result = 'GOOD' # 기본은 정상 사진으로
-                if ai_result == 'GOOD':
+                if response.ai_result == 'GOOD':
                     photo_state = 'normal'
-                elif ai_result == 'BAD':
+                elif response.ai_result == 'BAD':
                     photo_state = 'complaint'
                 else:
                     photo_state = 'etc'
