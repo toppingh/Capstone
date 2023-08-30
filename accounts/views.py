@@ -1,12 +1,14 @@
+from django.utils.decorators import method_decorator
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import UserProfileSerializer
 from .models import User
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class UserProfileAPIView(APIView):
     def get(self, request, pk):
         user = get_object_or_404(User, id=pk)
