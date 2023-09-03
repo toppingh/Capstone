@@ -67,8 +67,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_NAME = "csrfToken"
+# CSRF_HEADER_NAME = "X-CSRFToken"
 
 # CORS 설정
 CORS_ORIGIN_ALLOW_ALL = True
@@ -78,11 +78,13 @@ CSRF_TRUSTED_ORIGINS = (
     'http://127.0.0.1:8000',
     'http://172.30.1.62:8000',
     'http://192.168.35.29:8000',
+    'http://192.168.1.13:8000',
 )
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
     'http://172.30.1.62:8000',
     'http://192.168.35.29:8000',
+    'http://192.168.1.13:8000',
 )
 
 CORS_ALLOW_HEADERS = (
@@ -93,7 +95,7 @@ CORS_ALLOW_HEADERS = (
     'accept',
     'accept-encoding',
     'accept-language',
-    'authorization',
+    'Authorization',
     'connection',
     'content-type',
     'dnt',
@@ -216,11 +218,11 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
-    ]
+    ],
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2), # access token 만료기간
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=50), # access token 만료기간
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7), # refresh token 만료기간
     'ROTATE_REFRESH_TOKENS': False, # token 재발급 관련 설정
 }

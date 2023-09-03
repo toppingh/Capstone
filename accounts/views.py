@@ -1,14 +1,15 @@
-from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import UserProfileSerializer
 from .models import User
 
-@method_decorator(csrf_exempt, name='dispatch')
 class UserProfileAPIView(APIView):
     def get(self, request, pk):
         user = get_object_or_404(User, id=pk)
@@ -37,3 +38,32 @@ class UserProfileAPIView(APIView):
             "result": serializer.data
         }
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({'csrf_token': csrf_token})
+
+class ChangeUsername(APIView):
+    def put(self, request):
+        user = request.user
+        new_username = request.data.get('newUsername')
+
+        if not new_username:
+            return Response({'error': '새로운 이름을 입력하세요!'}, status=status.HTTP_400_BAD_REQUEST)
+        user.username = new_username
+        user.save()
+
+        return Response({'message': '이름이 성공적으로 변경되었습니다!'}, status=status.HTTP_200_OK)
+
+
+class ChangeProfileImg(APIView):
+    def put(self, request):
+        user = request.user
+        new_profileImg = request.data.get('newProfileImg')
+
+        if not new_profileImg:
+            return Response({'error': '이미지가 없습니다'}, status=status.HTTP_400_BAD_REQUEST)
+        user.profileImg = new_profileImg
+        user.save()
+
+        return Response({'message': '프로필 사진이 성공적으로 변경되었습니다!'}, status=status.HTTP_200_OK)
