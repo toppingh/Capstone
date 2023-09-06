@@ -30,7 +30,7 @@ class UserManager(BaseUserManager):
         superuser.save(using=self._db)
         return superuser
 
-class User(AbstractBaseUser, PermissionsMixin):
+class Account(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30)
     email = models.EmailField(max_length=50, unique=True)
     profileImg = models.ImageField(upload_to='profiles/%Y/%m/%d', default='default.png', blank=True, null=True)

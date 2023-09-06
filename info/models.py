@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import *
+# from accounts.models import *
 
 # Create your models here.
 # 문의
@@ -35,7 +35,7 @@ class Scrap(models.Model):
 
     class Meta:
         ordering = ['-created_at']  # 정렬
-        verbose_name = 'rcrap'
+        verbose_name = 'scrap'
         verbose_name_plural = 'Scraps'
 
     def __str__(self):

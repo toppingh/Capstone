@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework.generics import get_object_or_404
@@ -6,13 +6,25 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 
 from .serializers import UserProfileSerializer
-from .models import User
+from .models import Account
+
+@api_view(['GET'])
+def validate_jwt_token(request):
+    try:
+        token = request.META['HTTP_AUTHORIZATION']
+        data = {'token': token.split()[1]}
+        valid_data = VerifyJSONWebTokenSerializer().validate(data)
+    except Exception as e:
+        return Response(e)
+
+    return Response(status=status.HTTP_200_OK)
 
 class UserProfileAPIView(APIView):
     def get(self, request, pk):
-        user = get_object_or_404(User, id=pk)
+        user = get_object_or_404(Account, id=pk)
         serializer = UserProfileSerializer(user)
         result = {
             "code": 200,
@@ -22,7 +34,7 @@ class UserProfileAPIView(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
     def put(self, request, pk):
-        user = get_object_or_404(User, id=pk)
+        user = get_object_or_404(Account, id=pk)
         serializer = UserProfileSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -57,9 +69,15 @@ class ChangeUsername(APIView):
 
 
 class ChangeProfileImg(APIView):
+
     def put(self, request):
         user = request.user
-        new_profileImg = request.data.get('newProfileImg')
+        new_profileImg = request.data.get('profileImg')
+
+        auth_header = request.META.get('HTTP_AUTHORIZATION')
+        if auth_header:
+            auth_token = auth_header.split(' ')[1]
+            print('JWT 토큰: ', auth_token)
 
         if not new_profileImg:
             return Response({'error': '이미지가 없습니다'}, status=status.HTTP_400_BAD_REQUEST)

@@ -74,6 +74,8 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_COOKIE_SECURE = False
+
 CSRF_TRUSTED_ORIGINS = (
     'http://127.0.0.1:8000',
     'http://172.30.1.62:8000',
@@ -177,7 +179,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 유저 모델
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.Account'
 
 # 로그인 방법
 # AUTHENTICATION_BACKENDS = [
@@ -185,7 +187,7 @@ AUTH_USER_MODEL = 'accounts.User'
 # ]
 
 # 미디어 경로
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # 라이브러리 설정
@@ -196,6 +198,7 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'access', # 로그아웃을 위해 추가
     'JWT_AUTH_REFRESH_COOKIE': 'refresh_token', # 로그아웃을 위해 추가
     'JWT_AUTH_COOKIE_USE_CSRF': 'True',
+    # 'JWT_RESPONSE_PAYLOAD_HANDLER': 'api.custom_responses.my_jwt_response_handler',
 }
 JWT_AUTH_COOKIE = 'my-app-auth' # 호출할 Cookie Key값
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token' # Refresh Token Cookie Key 값을 사용하는 경우
