@@ -69,15 +69,9 @@ class ChangeUsername(APIView):
 
 
 class ChangeProfileImg(APIView):
-
-    def put(self, request):
-        user = request.user
+    def put(self, request, pk):
+        user = get_object_or_404(Account, id=pk)
         new_profileImg = request.data.get('profileImg')
-
-        auth_header = request.META.get('HTTP_AUTHORIZATION')
-        if auth_header:
-            auth_token = auth_header.split(' ')[1]
-            print('JWT 토큰: ', auth_token)
 
         if not new_profileImg:
             return Response({'error': '이미지가 없습니다'}, status=status.HTTP_400_BAD_REQUEST)
