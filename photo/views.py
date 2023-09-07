@@ -102,10 +102,10 @@ def sendAI(request):
         return HttpResponse('서버에서 예외 발생', status=500)
 
 
-# 위에서 사용하는 photo_save함수
+# 기존 코드에서 사용했던 photo_save함수
 def photo_save(photo_state, user_image, ai_image, email):
     try:
-        # flask api로 요청 전송
+        # flask api로 post
         load = {'email': email}
         files = {'user_image': user_image, 'ai_image': ai_image}
         response = requests.post('http://127.0.0.1:5000/detect', data=load, files=files)
@@ -125,6 +125,4 @@ def photo_save(photo_state, user_image, ai_image, email):
         photo_save(filename, ContentFile(response.content), save=True)
 
     except Exception as e:
-        # 예외 처리 로직 추가
-        # 예외 메시지를 로그에 기록하거나 사용자에게 알릴 수 있습니다.
         print(f"예외 발생: {str(e)}")
