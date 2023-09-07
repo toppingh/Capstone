@@ -63,7 +63,7 @@ class AllPhotoAPIView(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 # 파일 확장자 구분
-ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg']
+ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'heic']
 
 
 def file_extension(filename):
@@ -76,25 +76,30 @@ def sendAI(request):
     try:
         if request.method == 'POST':
             user_image = request.FILES.get('user_image')
-            # user_image_b = request.FILES.get('user_image_b')
-
-            # ai_image_a = request.FILES.get('ai_image_a')
-            # ai_image_b = request.FILES.get('ai_image_b')
-
             email = request.POST.get('email')
 
-            ai_server = 'http://127.0.0.1:5000/detect/'
+            if file_extension(user_image.name):
+                save_image = photo_save(user_image)
 
-            data = {'email': email}
-            files = {'user_image': user_image}
-            print(data, files) # 리액트가 보낸 요청 프린트
+                if save_image:
+                    # ai_server = 'http://127.0.0.1:5000/detect/'
 
-            ai_image = requests.post(ai_server, data=data, files=files) # ai서버로 post
+                    # data = {'email': email}
+                    # files = {'user_image': user_image}
+                    # ai_image = requests.post(ai_server, data=data, files=files)  # ai서버로 post
+                    #
+                    # print(data, files) # 리액트가 보낸 요청 프린트
+                    #
+                    # if ai_image.status_code == 200: # ai 응답
+                    #     return HttpResponse(ai_image.content, content_type='application/json')
+                    # else:
+                    return HttpResponse('이미지 저장 완료', status=200)
+                    print(save_image)
+                else :
+                    return HttpResponse('이미지 저장 실패', status=500)
+            else :
+                return HttpResponse('올바른 이미지 확장자가 아님', status=400)
 
-            if ai_image.status_code == 200: # ai 응답
-                return HttpResponse(ai_image.content, content_type='application/json')
-            else:
-                return HttpResponse('ai 서버 응답 실패', status=500)
         return HttpResponse('POST 메소드만 요청 가능', status=405)
 
     except Exception as e:
@@ -103,26 +108,17 @@ def sendAI(request):
 
 
 # 기존 코드에서 사용했던 photo_save함수
-def photo_save(photo_state, user_image, ai_image, email):
+def photo_save(image):
     try:
-        # flask api로 post
-        load = {'email': email}
-        files = {'user_image': user_image, 'ai_image': ai_image}
-        response = requests.post('http://127.0.0.1:5000/detect', data=load, files=files)
+        image_save = 'media/user_images/'
+        os.makedirs(image_save, exist_ok=True)
+        filename = os.path.join(image_save, image.name)
+        with open(filename, 'wb') as f:
+            for chunk in image.chunks():
+                f.write(chunk)
 
-        # 이미지 결과를 디비에 저장
-        image_result = Photo()
-        image_result.photo_state = photo_state
-
-        # 파일명 설정
-        if photo_state == 'GOOD':
-            filename = 'normal_image.jpg'
-        elif photo_state == 'BAD':
-            filename = 'complaint_image.jpg'
-        else:
-            filename = 'etc_image.jpg'
-
-        photo_save(filename, ContentFile(response.content), save=True)
+        return open(filename, 'rb')
 
     except Exception as e:
-        print(f"예외 발생: {str(e)}")
+        print(f'이미지 저장 중 예외 발생: {str(e)}')
+        return None
