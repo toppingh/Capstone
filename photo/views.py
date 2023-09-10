@@ -93,18 +93,18 @@ def sendAI(request):
                     # if ai_image.status_code == 200: # ai 응답
                     #     return HttpResponse(ai_image.content, content_type='application/json')
                     # else:
-                    return HttpResponse('이미지 저장 완료', status=200)
+                    return JsonResponse('이미지 저장 완료', status=200, safe=False)
                     print(save_image)
                 else :
-                    return HttpResponse('이미지 저장 실패', status=500)
+                    return JsonResponse('이미지 저장 실패', status=500, safe=False)
             else :
-                return HttpResponse('올바른 이미지 확장자가 아님', status=400)
+                return JsonResponse('올바른 이미지 확장자가 아님', status=400, safe=False)
 
-        return HttpResponse('POST 메소드만 요청 가능', status=405)
+        return JsonResponse('POST 메소드만 요청 가능', status=405, safe=False)
 
     except Exception as e:
         print(f'예외 발생 : {str(e)}')
-        return HttpResponse('서버에서 예외 발생', status=500)
+        return JsonResponse('서버에서 예외 발생', status=500, safe=False)
 
 
 # 기존 코드에서 사용했던 photo_save함수

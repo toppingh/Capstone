@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -7,10 +8,11 @@ from .models import QnA, Scrap, Report
 from .serializers import QnASerializer, ScrapSerializer, ReportSerializer
 
 # Create your views here.
+
 # QnA 뷰 (전체)
 class AllQnaAPIView(APIView):
     def get(self, request):
-        email = request.GET.get('email')
+        email = request.user.email
 
         if email:
             try:
@@ -21,19 +23,39 @@ class AllQnaAPIView(APIView):
                     "message": "성공적으로 수행됐습니다!",
                     "result": serializer.data
                 }
-                return Response(result, status=status.HTTP_200_OK)
+                return JsonResponse(result, status=status.HTTP_200_OK)
             except qnas.DoesNotExist:
                 result = {
                     "code": 404,
                     "message": "문의를 찾을 수 없습니다!",
                 }
-                return Response(result, status=status.HTTP_404_NOT_FOUND)
+                return JsonResponse(result, status=status.HTTP_404_NOT_FOUND)
         else:
             result = {
                 "code": 400,
-                "message": "이메일이 없습니다!",
+                "message": "등록된 이메일이 아닙니다!",
             }
-            return Response(result, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(result, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        serializer = QnASerializer(data=request.data)
+        if serializer.is_valid():
+            email = request.user.email
+            serializer.validated_data['email'] = email
+
+            serializer.save()
+            result = {
+                "code": 201,
+                "message": "성공적으로 생성됐습니다!",
+                "result": serializer.data
+            }
+            return JsonResponse(result, status=status.HTTP_201_CREATED)
+        result = {
+            "code": 400,
+            "message": "요청에 실패했습니다.",
+            "result": serializer.data
+        }
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # QnA 뷰 (상세)
 class QnaAPIView(APIView):
@@ -46,23 +68,6 @@ class QnaAPIView(APIView):
             "result": serializer.data
         }
         return Response(result, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = QnASerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            result = {
-                "code": 201,
-                "message": "성공적으로 생성됐습니다!",
-                "result": serializer.data
-            }
-            return Response(result, status=status.HTTP_201_CREATED)
-        result = {
-            "code": 400,
-            "message": "요청에 실패했습니다.",
-            "result": serializer.data
-        }
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, pk):
         qna = get_object_or_404(QnA, id=pk)
