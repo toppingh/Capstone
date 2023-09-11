@@ -9,7 +9,7 @@ class QnA(models.Model):
     content = models.CharField(max_length=700) # 문의 내용
     qnaImg = models.ImageField(null=True, upload_to='QnA/', blank=True) # 문의 파일 첨부
 
-    created_at = models.DateTimeField('생성 일시', auto_now_add=True)
+    created_at = models.DateTimeField('생성 일시', auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField('수정 일시', auto_now=True)
 
     class Meta:

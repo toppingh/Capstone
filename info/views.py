@@ -50,12 +50,14 @@ class AllQnaAPIView(APIView):
                 "result": serializer.data
             }
             return JsonResponse(result, status=status.HTTP_201_CREATED)
-        result = {
-            "code": 400,
-            "message": "요청에 실패했습니다.",
-            "result": serializer.data
-        }
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else :
+            print(serializer.errors)
+            result = {
+                "code": 400,
+                "message": "요청에 실패했습니다.",
+                "result": serializer.data
+            }
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # QnA 뷰 (상세)
 class QnaAPIView(APIView):
