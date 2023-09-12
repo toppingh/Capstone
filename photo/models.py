@@ -13,7 +13,7 @@ class Photo(models.Model):
     name = models.CharField(max_length=60) # 필수
     ai_name = models.CharField(max_length=60, null=True, blank=True)
     state = models.CharField(max_length=20, choices=photo_state, default='GOOD', null=True, blank=True)
-    explain = models.CharField(max_length=60, null=True, blank=True) # 이미지에 대한 결과 코멘트
+    explain = models.CharField(max_length=1000, null=True, blank=True) # 이미지에 대한 결과 코멘트
 
     created_at = models.DateTimeField('생성 일시', auto_now_add=True)
     updated_at = models.DateTimeField('수정 일시', auto_now=True)

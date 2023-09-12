@@ -3,12 +3,12 @@ from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import logging
 
 from .models import QnA, Scrap, Report
 from .serializers import QnASerializer, ScrapSerializer, ReportSerializer
 
 # Create your views here.
-
 # QnA 뷰 (전체)
 class AllQnaAPIView(APIView):
     def get(self, request):
@@ -62,33 +62,53 @@ class AllQnaAPIView(APIView):
 # QnA 뷰 (상세)
 class QnaAPIView(APIView):
     def get(self, request, pk):
-        qna = get_object_or_404(QnA, id=pk)
-        serializer = QnASerializer(qna)
-        result = {
-            "code": 200,
-            "message": "성공적으로 수행됐습니다!",
-            "result": serializer.data
-        }
-        return JsonResponse(result, status=status.HTTP_200_OK)
-
-    def put(self, request, pk):
-        qna = get_object_or_404(QnA, id=pk)
-        serializer = QnASerializer(QnA, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        try:
+            qna = get_object_or_404(QnA, id=pk)
+            serializer = QnASerializer(qna)
             result = {
                 "code": 200,
                 "message": "성공적으로 수행됐습니다!",
                 "result": serializer.data
             }
             return JsonResponse(result, status=status.HTTP_200_OK)
+        except Exception as e:
+            result = {
+                "code": 500,
+                "message": "서버 에러",
+                "result": str(e)
+            }
+            return JsonResponse(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        result = {
-            "code": 400,
-            "message": "요청에 실패했습니다.",
-            "result": serializer.data
-        }
-        return JsonResponse(result, status=status.HTTP_400_BAD_REQUEST)
+    def put(self, request, pk):
+        email = request.user.email
+
+        try:
+            qna = get_object_or_404(QnA, id=pk)
+            modify_content = request.data.get('modify_content')
+
+            if not modify_content:
+                result = {
+                    "code": 200,
+                    "message": "성공적으로 수행됐습니다!",
+                    "result": modify_content
+                }
+                qna.content = modify_content
+                qna.save()
+                return JsonResponse(result, status=status.HTTP_200_OK)
+
+            result = {
+                "code": 400,
+                "message": "요청에 실패했습니다.",
+                "result": modify_content
+            }
+            return JsonResponse(result, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            result = {
+                "code": 500,
+                "message": "서버 에러",
+                "result": str(e)
+            }
+            return JsonResponse(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # 스크랩 뷰
 class ScrapAPIView(APIView):
