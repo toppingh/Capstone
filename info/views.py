@@ -3,8 +3,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import logging
 
+from accounts.models import Account
 from .models import QnA, Scrap, Report
 from .serializers import QnASerializer, ScrapSerializer, ReportSerializer
 
@@ -79,36 +79,23 @@ class QnaAPIView(APIView):
             }
             return JsonResponse(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# QnA 수정 뷰
+class EditQnaAPIView(APIView):
     def put(self, request, pk):
-        email = request.user.email
+        qna = get_object_or_404(QnA, id=pk)
+        new_title = request.data.get('newTitle')
+        new_content = request.data.get('newContent')
 
-        try:
-            qna = get_object_or_404(QnA, id=pk)
-            modify_content = request.data.get('modify_content')
+        if not new_title:
+            return Response({'error': '제목을 입력하세요!'}, status=status.HTTP_400_BAD_REQUEST)
+        if not new_content:
+            return Response({'error': '내용을 입력하세요!'}, status=status.HTTP_400_BAD_REQUEST)
 
-            if not modify_content:
-                result = {
-                    "code": 200,
-                    "message": "성공적으로 수행됐습니다!",
-                    "result": modify_content
-                }
-                qna.content = modify_content
-                qna.save()
-                return JsonResponse(result, status=status.HTTP_200_OK)
+        qna.title = new_title
+        qna.content = new_content
+        qna.save()
 
-            result = {
-                "code": 400,
-                "message": "요청에 실패했습니다.",
-                "result": modify_content
-            }
-            return JsonResponse(result, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            result = {
-                "code": 500,
-                "message": "서버 에러",
-                "result": str(e)
-            }
-            return JsonResponse(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': '수정을 완료했습니다!'}, status=status.HTTP_200_OK)
 
 # 스크랩 뷰
 class ScrapAPIView(APIView):
