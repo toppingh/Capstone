@@ -1,10 +1,6 @@
 from django.urls import path, include
-from rest_framework import routers
 
 from .views import *
-
-router = routers.SimpleRouter()
-router.register('search', HistoryViewSet)
 
 urlpatterns = [
     path('blight/<int:pk>/', BlightAPIView.as_view()),
@@ -13,5 +9,6 @@ urlpatterns = [
     path('pest/', AllPestAPIView.as_view()),
     path('history/<int:pk>/', HistoryAPIView.as_view()),
     path('history/', AllHistoryAPIView.as_view()),
+    # path('search/', ResultsAPIView.as_view()),
+    path('search/', results, name='search_results'),
 ]
-urlpatterns += router.urls

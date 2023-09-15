@@ -1,21 +1,19 @@
 import io
 import os
 
-from django.core.files.base import ContentFile
-from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import default_storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import JsonResponse, HttpResponse
+from django.db.models import Q
 import requests
 import tempfile
 import base64
 from PIL import Image
 
-from home.models import Blight
+from home.models import Blight, History
 from project.settings import MEDIA_ROOT, MEDIA_URL
 from .models import Photo
 from .serializers import NormalPhotoSerializer, ComplaintPhotoSerializer, EtcPhotoSerializer, AllPhotoSerializer

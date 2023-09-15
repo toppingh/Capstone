@@ -1,3 +1,8 @@
+import json
+
+from django.db.models import Q
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework import status, viewsets, generics
@@ -90,3 +95,20 @@ class HistoryAPIView(APIView):
             "result": serializer.data
         }
         return Response(result, status=status.HTTP_200_OK)
+
+# 검색
+@csrf_exempt
+def results(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        query = data.get('q')
+
+        if query:
+            results = History.objects.filter(name__icontains=query).order_by('-created_at')
+            data = {'results': [{'email': result.email, 'name': result.name, 'history_img': result.history_img.url, 'causation': result.causation, 'created_at': result.created_at} for result in results]}
+        else:
+            data = {'message': '검색어를 입력하시오'}
+
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'message': 'POST요청 필요'}, status=400)

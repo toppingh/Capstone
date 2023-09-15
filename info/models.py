@@ -43,7 +43,6 @@ class Scrap(models.Model):
 
 # 제보
 class Report(models.Model):
-    email = models.EmailField() # 이메일은 필수, 유저 구분용
     title = models.CharField(max_length=100) # 제보글 제목
     content = models.CharField(max_length=700) # 제보글 내용
     reportImg = models.ImageField(null=True, upload_to='reports/', blank=True) # 제보 파일 첨부

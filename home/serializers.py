@@ -18,4 +18,4 @@ class PestSerializer(serializers.ModelSerializer):
 class HistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = History
-        fields = ('id', 'email', 'name', 'history_img', 'causation', 'created_at')
+        fields = '__all__'

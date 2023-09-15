@@ -138,31 +138,24 @@ class ScrapAPIView(APIView):
 # 제보 뷰 (전체)
 class AllReportAPIView(APIView):
     def get(self, request):
-        email = request.GET.get('email')
-
-        if email:
-            try:
-                reports = Report.objects.filter(email=email).order_by('-id')
-                serializer = ReportSerializer(reports, many=True)
-                result = {
-                    "code": 200,
-                    "message": "성공적으로 수행됐습니다!",
-                    "result": serializer.data
-                }
-                return JsonResponse(result, status=status.HTTP_200_OK)
-
-            except reports.DoesNotExist:
-                result = {
-                    "code": 404,
-                    "message": "제보를 찾을 수 없습니다!",
-                }
-                return JsonResponse(result, status=status.HTTP_404_NOT_FOUND)
-        else:
+        try:
+            reports = Report.objects.all().order_by('-id')
+            serializer = ReportSerializer(reports, many=True)
             result = {
-                "code": 400,
-                "message": "이메일이 없습니다!",
+                "code": 200,
+                "message": "현재 등록된 제보입니다!",
+                "result": serializer.data
             }
-            return JsonResponse(result, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(result, status=status.HTTP_200_OK)
+        except Exception as e:
+            result = {
+                "code": 500,
+                "message": "서버 에러",
+                "result": str(e)
+            }
+            return JsonResponse(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 

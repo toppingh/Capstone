@@ -20,4 +20,4 @@ class ScrapSerializer(serializers.ModelSerializer):
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields = ('id', 'email', 'title', 'content', 'reportImg')
+        fields = ('id', 'title', 'content', 'reportImg', 'created_at')
