@@ -98,9 +98,10 @@ def results(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         query = data.get('q')
+        user_email = request.user.email
 
         if query:
-            results = History.objects.filter(name__icontains=query).order_by('-created_at')
+            results = History.objects.filter(email=user_email, name__icontains=query).order_by('-created_at')
             data = {'results': [{'email': result.email, 'name': result.name, 'history_img': result.history_img.url, 'causation': result.causation, 'created_at': result.created_at} for result in results]}
         else:
             data = {'message': '검색어를 입력하시오'}
@@ -109,31 +110,7 @@ def results(request):
     else:
         return JsonResponse({'message': 'POST요청 필요'}, status=400)
 
-# 날짜 검색
-# @csrf_exempt
-# def date_results(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         selected_date = data.get('selected_date')
-#
-#         if selected_date:
-#             selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
-#
-#             results = History.objects.filter(
-#                 created_at__year=selected_date.year,
-#                 created_at__month=selected_date.month,
-#                 created_at__day=selected_date.day
-#             ).order_by('-created_at')
-#             print(results)
-#
-#             data = {'results': [{'email': result.email, 'name': result.name, 'history_img': result.history_img.url, 'causation': result.causation, 'created_at': result.created_at} for result in results]}
-#         else:
-#             data = {'message': '날짜를 선택하시오'}
-#
-#         return JsonResponse(data)
-#     else:
-#         return JsonResponse({'message': 'POST요청 필요'}, status=400)
-
+# 날짜로 검색
 @csrf_exempt
 def date_results(request):
     if request.method == 'POST':
@@ -145,7 +122,6 @@ def date_results(request):
 
             user_email = request.user.email
 
-            # created_at 값을 "YYYY-MM-DD" 형식의 문자열로 변환하여 비교
             selected_date_str = selected_date.strftime("%Y-%m-%d")
             results = History.objects.filter(
                 created_at__startswith=selected_date_str,  # 날짜 부분만 비교
