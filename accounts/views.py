@@ -3,10 +3,10 @@ from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from django.core.mail.message import EmailMessage
 
 from .serializers import UserProfileSerializer
 from .models import Account
@@ -79,3 +79,11 @@ class ChangeProfileImg(APIView):
         user.save()
 
         return Response({'message': '프로필 사진이 성공적으로 변경되었습니다!'}, status=status.HTTP_200_OK)
+
+# 이메일
+def send_email(request):
+    subject = "message" # 타이틀
+    to = ["h62638901@gmail.com"]
+    from_email = "Greendan@gmail.com"
+    message = "주겨달라!!!!!!!!!!!!!"
+    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()

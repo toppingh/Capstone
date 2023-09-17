@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
-from .views import UserProfileAPIView, ChangeUsername, get_csrf_token, ChangeProfileImg, validate_jwt_token
+from .views import UserProfileAPIView, ChangeUsername, get_csrf_token, ChangeProfileImg, validate_jwt_token, send_email
 
 app_name = 'accounts'
 
@@ -13,6 +13,7 @@ urlpatterns = [
     # path('change/username/', ChangeUsername.as_view(), name='change_username'),
     path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),
     path('token/', validate_jwt_token, name='jwt_token'),
+    path('send_email', send_email, name='send_email'),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),

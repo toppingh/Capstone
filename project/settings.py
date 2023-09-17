@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os
+import os, json
 from datetime import timedelta
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from project import mysettings
@@ -22,8 +23,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7*84+sznc*!4^33_=ndpsad%d^mtscc*he9z_tt#sog@12%d27'
+# SECRET_KEY 삭제 후 JSON파일 읽기
+def get_secret(setting, secret_file="secrets.json"):
+    error_msg = ""
+
+    try:
+        with open(os.path.join(BASE_DIR, secret_file)) as f:
+            secrets = json.loads(f.read())
+
+        setting_value = secrets[setting]
+        if setting_value is not None:
+            return setting_value
+        else:
+            error_msg = "Setting '{0}' not found in {1}".format(setting, secret_file)
+    except FileNotFoundError:
+        error_msg = "{0} file not found".format(secret_file)
+    except json.JSONDecodeError:
+        error_msg = "Invalid JSON format in {0}".format(secret_file)
+
+    raise ImproperlyConfigured(error_msg)
+
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -212,8 +232,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email' # 로그인 인증 수단
 ACCOUNT_EMAIL_VERIFICATION = 'none' # 회원가입 시 Email 인증 필수 여부
 LOGOUT_ON_PASSWORD_CHANGE = False
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # 추가
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
@@ -229,3 +247,12 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7), # refresh token 만료기간
     'ROTATE_REFRESH_TOKENS': False, # token 재발급 관련 설정
 }
+
+## 이메일 전송 관련 코드 추가
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # SMTP
+EMAIL_HOST = 'smtp.gmail.com' # 지메일 호스트 서버
+EMAIL_PORT = '587' # gmail과 통신하는 포트
+EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER") # 발신 이메일
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD") # 발신 메일 비밀번호
+EMAIL_USE_TLS = True # TLS 보안 방법
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # 사이트 관련 자동응답을 수신할 이메일 주소
