@@ -1,6 +1,9 @@
+from datetime import datetime
 import json
-
-from django.db.models import Q
+from django.db import models
+from django.contrib.auth.decorators import login_required
+from django.db.models import F
+from django.db.models.functions import ExtractDay, Extract, TruncDate
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.filters import SearchFilter
@@ -63,20 +66,13 @@ class PestAPIView(APIView):
         }
         return Response(result, status=status.HTTP_200_OK)
 
-# 히스토리 뷰셋
-class HistoryViewSet(ModelViewSet):
-    queryset = History.objects.all()
-    serializer_class = HistorySerializer
-
-    filter_backends = [SearchFilter]
-    search_fields = ('$name', '$causation', )
-
-
 # 히스토리 전체 api 뷰
 class AllHistoryAPIView(APIView):
     def get(self, request):
-        histories = History.objects.all()
-        serializer = HistorySerializer(histories, many=True)
+        email = request.user.email
+        user_history = History.objects.filter(email=email)
+
+        serializer = HistorySerializer(user_history, many=True)
         result = {
             "code": 200,
             "message": "성공적으로 수행됐습니다!",
@@ -108,6 +104,66 @@ def results(request):
             data = {'results': [{'email': result.email, 'name': result.name, 'history_img': result.history_img.url, 'causation': result.causation, 'created_at': result.created_at} for result in results]}
         else:
             data = {'message': '검색어를 입력하시오'}
+
+        return JsonResponse(data)
+    else:
+        return JsonResponse({'message': 'POST요청 필요'}, status=400)
+
+# 날짜 검색
+# @csrf_exempt
+# def date_results(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         selected_date = data.get('selected_date')
+#
+#         if selected_date:
+#             selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
+#
+#             results = History.objects.filter(
+#                 created_at__year=selected_date.year,
+#                 created_at__month=selected_date.month,
+#                 created_at__day=selected_date.day
+#             ).order_by('-created_at')
+#             print(results)
+#
+#             data = {'results': [{'email': result.email, 'name': result.name, 'history_img': result.history_img.url, 'causation': result.causation, 'created_at': result.created_at} for result in results]}
+#         else:
+#             data = {'message': '날짜를 선택하시오'}
+#
+#         return JsonResponse(data)
+#     else:
+#         return JsonResponse({'message': 'POST요청 필요'}, status=400)
+
+@csrf_exempt
+def date_results(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        selected_date = data.get('selected_date')
+
+        if selected_date:
+            selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
+
+            user_email = request.user.email
+
+            # created_at 값을 "YYYY-MM-DD" 형식의 문자열로 변환하여 비교
+            selected_date_str = selected_date.strftime("%Y-%m-%d")
+            results = History.objects.filter(
+                created_at__startswith=selected_date_str,  # 날짜 부분만 비교
+                email=user_email
+            ).order_by('-created_at')
+
+            if results.exists():
+                data = {'results': [{'email': result.email, 'name': result.name, 'history_img': result.history_img.url,
+                                     'causation': result.causation, 'created_at': result.created_at} for result in
+                                    results]}
+            else:
+                data = {'message': '해당 날짜에 맞는 내역이 없습니다.'}
+        else:
+            data = {'message': '날짜를 선택하시오'}
+
+        print("selected_date: ", selected_date)
+        print("email: ", user_email)
+        print("results: ", results)
 
         return JsonResponse(data)
     else:

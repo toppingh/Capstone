@@ -11,4 +11,5 @@ urlpatterns = [
     path('history/', AllHistoryAPIView.as_view()),
     # path('search/', ResultsAPIView.as_view()),
     path('search/', results, name='search_results'),
+    path('date-search/', date_results, name='date_results'),
 ]
