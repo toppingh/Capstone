@@ -87,3 +87,14 @@ def send_email(request):
     from_email = "Greendan@gmail.com"
     message = "주겨달라!!!!!!!!!!!!!"
     EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+
+# class SendEmailAPIView(APIView):
+#     def post(self, request, format=None):
+#         to_email = request.data.get('email') # 리액트에서 email로
+#
+#         if to_email:
+#             try:
+#                 send_email('이메일 제목 : 그린단 비밀번호 재설정 안내', '보내는 이메일 주소', [to_email])
+#                 return Response({'message': '이메일이 성공적으로 전송되었습니다.'}, status=status.HTTP_200_OK)
+#             except Exception as e:
+#                 return Response({'message': '이메일 전송 실패: {}'.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

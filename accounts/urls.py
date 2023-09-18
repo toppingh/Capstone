@@ -14,6 +14,7 @@ urlpatterns = [
     path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),
     path('token/', validate_jwt_token, name='jwt_token'),
     path('send_email', send_email, name='send_email'),
+    # path('send_email', SendEmailAPIView.as_view(), name='send_email'),
 
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
