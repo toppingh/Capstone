@@ -111,7 +111,7 @@ def send_email(request):
 
                 send_mail(subject, message, from_email, recipient_list)
 
-                return JsonResponse({'message': '이메일이 전송되었습니다.', 'auth_code': auth_code})
+                return JsonResponse({'message': '이메일이 전송되었습니다.'})
 
             else:
                 return JsonResponse({'message': '해당 이메일을 찾을 수 없습니다.'})
