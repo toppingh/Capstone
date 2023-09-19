@@ -1,5 +1,12 @@
+import json
+import secrets
+import string
+import random
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.middleware.csrf import get_token
 from rest_framework.generics import get_object_or_404
 from rest_framework import status
@@ -7,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from django.core.mail.message import EmailMessage
+from django.core.mail import BadHeaderError, send_mail
 
 from .serializers import UserProfileSerializer
 from .models import Account
@@ -81,20 +89,63 @@ class ChangeProfileImg(APIView):
         return Response({'message': '프로필 사진이 성공적으로 변경되었습니다!'}, status=status.HTTP_200_OK)
 
 # 이메일
+@csrf_exempt
 def send_email(request):
-    subject = "message" # 타이틀
-    to = ["h62638901@gmail.com"]
-    from_email = "Greendan@gmail.com"
-    message = "주겨달라!!!!!!!!!!!!!"
-    EmailMessage(subject=subject, body=message, to=to, from_email=from_email).send()
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        user_email = data.get('email')
+        print(f"이메일: {user_email}")
 
-# class SendEmailAPIView(APIView):
-#     def post(self, request, format=None):
-#         to_email = request.data.get('email') # 리액트에서 email로
-#
-#         if to_email:
-#             try:
-#                 send_email('이메일 제목 : 그린단 비밀번호 재설정 안내', '보내는 이메일 주소', [to_email])
-#                 return Response({'message': '이메일이 성공적으로 전송되었습니다.'}, status=status.HTTP_200_OK)
-#             except Exception as e:
-#                 return Response({'message': '이메일 전송 실패: {}'.format(str(e))}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
+            if Account.objects.filter(email=user_email).exists():
+                auth_code = str(random.randint(100000, 999999))
+                user_account = Account.objects.get(email=user_email)
+                user_account.auth_code = auth_code
+                user_account.save()
+                print(auth_code)
+
+                subject = '그린단 비밀번호 재설정 안내'
+                message = f'비밀번호 재설정을 위한 인증코드를 보내드립니다. 인증 코드 : {auth_code}'
+                from_email = 'h62638901@gmail.com'
+                recipient_list = [user_email]
+
+                send_mail(subject, message, from_email, recipient_list)
+
+                return JsonResponse({'message': '이메일이 전송되었습니다.', 'auth_code': auth_code})
+
+            else:
+                return JsonResponse({'message': '해당 이메일을 찾을 수 없습니다.'})
+        except BadHeaderError:
+            return JsonResponse({'message': '유효하지 않은 헤더가 포함되었습니다.'})
+        except Exception as e:
+            return JsonResponse({'message': str(e)})
+    else:
+        return HttpResponse(status=405)
+
+
+@csrf_exempt
+def check_auth_code(request):
+    if request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
+        user_email = data.get('email')
+        auth_code = data.get('auth_code')
+
+        try:
+            # 데이터베이스에서 해당 이메일에 대한 계정을 가져옵니다.
+            user_account = Account.objects.filter(email=user_email).first()
+
+            if user_account:
+                db_auth_code = user_account.auth_code
+                print('auth_code:', auth_code)
+                print('db:', db_auth_code)
+
+                if db_auth_code == str(auth_code):
+                    return JsonResponse({'message': '비밀번호 재설정 가능'})
+                else:
+                    return JsonResponse({'message': '인증코드가 일치하지 않습니다.'})
+            else:
+                return JsonResponse({'message': '해당 이메일을 찾을 수 없습니다.'})
+        except Exception as e:
+            return JsonResponse({'message': str(e)})
+    else:
+        return HttpResponse(status=405)

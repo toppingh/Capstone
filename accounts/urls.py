@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 
-from .views import UserProfileAPIView, ChangeUsername, get_csrf_token, ChangeProfileImg, validate_jwt_token, send_email
+from .views import UserProfileAPIView, ChangeUsername, get_csrf_token, ChangeProfileImg, validate_jwt_token, send_email, check_auth_code
 
 app_name = 'accounts'
 
@@ -13,11 +13,6 @@ urlpatterns = [
     # path('change/username/', ChangeUsername.as_view(), name='change_username'),
     path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),
     path('token/', validate_jwt_token, name='jwt_token'),
-    path('send_email', send_email, name='send_email'),
-    # path('send_email', SendEmailAPIView.as_view(), name='send_email'),
-
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password_reset_confirm/uid-<int:uid>&token=<str:token>>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('password_reset_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete',)
+    path('send_email/', send_email, name='send_email'),
+    path('check_auth_code/', check_auth_code, name='check_auth_code'),
 ]

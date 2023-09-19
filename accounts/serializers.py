@@ -35,3 +35,8 @@ class UserSrializerWithToken(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('token', 'username', 'email', 'ProfileImg')
+
+# 인증번호 시리얼라이저
+class EmailVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField()
