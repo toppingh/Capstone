@@ -136,15 +136,16 @@ def check_auth_code(request):
 
             if user_account:
                 db_auth_code = user_account.auth_code
-                print('auth_code:', auth_code)
-                print('db:', db_auth_code)
+                print('auth_code:', str(auth_code))
+                print('db:', str(db_auth_code))
+                print(str(db_auth_code) == str(auth_code))
 
-                if db_auth_code == str(auth_code):
-                    return JsonResponse({'message': '비밀번호 재설정 가능'})
+                if db_auth_code == auth_code:
+                    return JsonResponse({'message': '비밀번호 재설정 가능', 'status': 200}, status=200)
                 else:
-                    return JsonResponse({'message': '인증코드가 일치하지 않습니다.'})
+                    return JsonResponse({'message': '인증코드가 일치하지 않습니다.'}, status=400)
             else:
-                return JsonResponse({'message': '해당 이메일을 찾을 수 없습니다.'})
+                return JsonResponse({'message': '해당 이메일을 찾을 수 없습니다.'}, status=404)
         except Exception as e:
             return JsonResponse({'message': str(e)})
     else:
