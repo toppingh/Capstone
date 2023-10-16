@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.models import Account
 from .models import QnA, Scrap, Report
 from .serializers import QnASerializer, ScrapSerializer, ReportSerializer
 
@@ -154,10 +153,6 @@ class AllReportAPIView(APIView):
                 "result": str(e)
             }
             return JsonResponse(result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
 
 # 제보 뷰 (상세)
 class ReportAPIView(APIView):
