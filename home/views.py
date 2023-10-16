@@ -1,18 +1,11 @@
 from datetime import datetime
 import json
-from django.db import models
-from django.contrib.auth.decorators import login_required
-from django.db.models import F
-from django.db.models.functions import ExtractDay, Extract, TruncDate
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.filters import SearchFilter
 from rest_framework.generics import get_object_or_404
-from rest_framework import status, viewsets, generics
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import filters
-from rest_framework.viewsets import ModelViewSet
 
 from .models import Blight, Pest, History
 from .serializers import BlightSerializer, PestSerializer, HistorySerializer

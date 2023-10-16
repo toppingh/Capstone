@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from .views import *
 
@@ -9,7 +9,6 @@ urlpatterns = [
     path('pest/', AllPestAPIView.as_view()),
     path('history/<int:pk>/', HistoryAPIView.as_view()),
     path('history/', AllHistoryAPIView.as_view()),
-    # path('search/', ResultsAPIView.as_view()),
     path('search/', results, name='search_results'),
     path('date-search/', date_results, name='date_results'),
 ]
