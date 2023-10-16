@@ -1,9 +1,5 @@
 import json
-import secrets
-import string
 import random
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_jwt.serializers import VerifyJSONWebTokenSerializer
 from django.http import JsonResponse, HttpResponse
@@ -13,7 +9,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from django.core.mail.message import EmailMessage
 from django.core.mail import BadHeaderError, send_mail
 
 from .serializers import UserProfileSerializer
@@ -63,19 +58,6 @@ def get_csrf_token(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrf_token': csrf_token})
 
-class ChangeUsername(APIView):
-    def put(self, request):
-        user = request.user
-        new_username = request.data.get('newUsername')
-
-        if not new_username:
-            return Response({'error': '새로운 이름을 입력하세요!'}, status=status.HTTP_400_BAD_REQUEST)
-        user.username = new_username
-        user.save()
-
-        return Response({'message': '이름이 성공적으로 변경되었습니다!'}, status=status.HTTP_200_OK)
-
-
 class ChangeProfileImg(APIView):
     def put(self, request, pk):
         user = get_object_or_404(Account, id=pk)
@@ -88,7 +70,7 @@ class ChangeProfileImg(APIView):
 
         return Response({'message': '프로필 사진이 성공적으로 변경되었습니다!'}, status=status.HTTP_200_OK)
 
-# 이메일
+# 비밀번호 재설정을 위한 이메일 전송 (인증 번호 전송)
 @csrf_exempt
 def send_email(request):
     if request.method == 'POST':
