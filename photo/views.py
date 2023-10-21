@@ -1,20 +1,18 @@
 import io
 import os
-
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from rest_framework import status, generics
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.http import JsonResponse, HttpResponse
-from django.db.models import Q
 import requests
 import tempfile
 import base64
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.http import HttpResponse
 from PIL import Image
 
-from home.models import Blight, History
-from project.settings import MEDIA_ROOT, MEDIA_URL
+from home.models import Blight
+from project.settings import MEDIA_ROOT
 from .models import Photo
 from .serializers import NormalPhotoSerializer, ComplaintPhotoSerializer, EtcPhotoSerializer, AllPhotoSerializer
 
@@ -70,10 +68,8 @@ class AllPhotoAPIView(APIView):
 # 파일 확장자 구분
 ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg', 'heic']
 
-
 def file_extension(filename):
     return any(filename.endswith(ext) for ext in ALLOWED_EXTENSIONS)
-
 
 @csrf_exempt
 # Flask api로 요청 보내기
@@ -153,7 +149,6 @@ def sendAI(request):
     except Exception as e:
         print(f'예외 발생 : {str(e)}')
         return HttpResponse('서버에서 예외 발생', status=500)
-
 
 # 기존 코드에서 사용했던 photo_save함수
 def photo_save(image):

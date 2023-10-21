@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token, refresh_jwt_token
+from rest_framework_jwt.views import verify_jwt_token, refresh_jwt_token
 from accounts.views import validate_jwt_token
 
 from django.conf.urls.static import static
@@ -28,10 +28,7 @@ urlpatterns = [
     path('info/', include('info.urls')),
     path('photo/', include('photo.urls')),
     path('a1ds5fa6eragsdfa565awaf3d5a4e/', admin.site.urls),
-    # url 추가
     path('validate/', validate_jwt_token),
-    # path('login/', obtain_jwt_token),
-
     path('verify/', verify_jwt_token),
     path('refresh/', refresh_jwt_token),
 ]

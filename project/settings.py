@@ -87,9 +87,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-# CSRF_COOKIE_NAME = "csrfToken"
-# CSRF_HEADER_NAME = "X-CSRFToken"
-
 # CORS 설정
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
@@ -98,13 +95,11 @@ CSRF_COOKIE_SECURE = False
 
 CSRF_TRUSTED_ORIGINS = (
     'http://127.0.0.1:8000',
-    'http://172.30.1.62:8000',
     'http://192.168.35.29:8000',
     'http://192.168.1.13:8000',
 )
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
-    'http://172.30.1.62:8000',
     'http://192.168.35.29:8000',
     'http://192.168.1.13:8000',
 )
@@ -200,11 +195,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 유저 모델
 AUTH_USER_MODEL = 'accounts.Account'
-
-# 로그인 방법
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
-# ]
 
 # 미디어 경로
 MEDIA_URL = "/media/"
