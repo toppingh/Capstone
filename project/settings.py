@@ -95,13 +95,9 @@ CSRF_COOKIE_SECURE = False
 
 CSRF_TRUSTED_ORIGINS = (
     'http://127.0.0.1:8000',
-    'http://192.168.35.29:8000',
-    'http://192.168.1.13:8000',
 )
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
-    'http://192.168.35.29:8000',
-    'http://192.168.1.13:8000',
 )
 
 CORS_ALLOW_HEADERS = (
