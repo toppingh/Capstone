@@ -16,8 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_jwt.views import verify_jwt_token, refresh_jwt_token
-from accounts.views import validate_jwt_token
+# from rest_framework_jwt.views import verify_jwt_token, refresh_jwt_token
+# from accounts.views import validate_jwt_token
 
 from django.conf.urls.static import static
 from project import settings
@@ -28,9 +28,9 @@ urlpatterns = [
     path('info/', include('info.urls')),
     path('photo/', include('photo.urls')),
     path('a1ds5fa6eragsdfa565awaf3d5a4e/', admin.site.urls),
-    path('validate/', validate_jwt_token),
-    path('verify/', verify_jwt_token),
-    path('refresh/', refresh_jwt_token),
+    # path('validate/', validate_jwt_token),
+    # path('verify/', verify_jwt_token),
+    # path('refresh/', refresh_jwt_token), accounts.urls로 사용가능
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
